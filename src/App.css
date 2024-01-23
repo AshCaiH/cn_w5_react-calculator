@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Geologica');
+@import url('https://fonts.googleapis.com/css?family=Chivo+Mono');
 
 #root {
   max-width: 1280px;
@@ -45,7 +45,8 @@
 }
 
 .display {
-  font-family: "Geologica";
+  font-family: "Chivo Mono";
+  font-variant-ligatures: none;
   background-color: rgb(213, 217, 196);
   padding: 10px 20px;
   box-shadow: -3px 3px 1px inset rgba(0,0,0,0.15);

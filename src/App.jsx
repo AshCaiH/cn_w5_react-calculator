@@ -72,7 +72,7 @@ function App() {
 
     setWorking(answer);
 
-    if (answer.toString().length > 12) answer = answer.toExponential(9);
+    if (answer.toString().length > 12) answer = answer.toExponential(8);
 
     if (result) {
       setDisplay(answer);
