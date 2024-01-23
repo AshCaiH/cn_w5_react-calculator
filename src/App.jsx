@@ -87,7 +87,7 @@ function App() {
           <p className="calcType">{nextCalc}</p>
         </div>
         <div className="displayRow bottom">
-          <p className="display">{display}</p>
+          <p className="maindisplay">{display}</p>
         </div>
       </div>
 
