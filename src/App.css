@@ -13,14 +13,10 @@
 .numpad {
   display: flex;
   flex-direction: row-reverse;
-  width: 180px;
+  width: 190px;
   flex-wrap: wrap;
   align-self: center;
-  justify-content: left;
-}
-
-.mainBtn {
-  width: 33%;
+  justify-content: center;
 }
 
 .btn0 {
@@ -69,4 +65,22 @@
 .displayRow.bottom {
   text-align: right;
   font-size:24pt;
+}
+
+button {
+  margin: 2px;
+  width: 56px;
+  height: 53px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.numBtn {
+  font-family: "Chivo Mono";
+  font-size: 16pt;
+}
+
+.btnC {
+  background-color: rgb(241, 209, 147);
 }

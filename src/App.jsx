@@ -1,11 +1,25 @@
 import { useState } from 'react';
+import { FaDivide, FaPlus, FaX, FaMinus, FaC, FaEquals, FaSuperscript, FaSquareRootVariable  } from "react-icons/fa6";
+import { GoDotFill, } from "react-icons/go";
 import './App.css'
 
 const nums = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].reverse();
-const commands = ["/","*","-","+"];
-const bottomKeys = ["=", "."];
-const leftKeys = ["ANS", "C"]
-const displaySize = 12;
+const rightKeys = [
+  {name:"/", class:"Divide",icon:<FaDivide/>},
+  {name:"*", class:"Mult",  icon:<FaX/>},
+  {name:"+", class:"Plus",  icon:<FaPlus/>},
+  {name:"=", class:"Eq",    icon:<FaEquals/>}
+];
+const bottomKeys = [
+  {name:"-", class:"Minus", icon:<FaMinus/>},
+  {name:".", class:"Dot",   icon:<GoDotFill/>},
+];
+const leftKeys = [
+  {name:"Pow",  class:"Pow",  icon:<FaSuperscript/>},
+  {name:"Sqrt", class:"Sqrt", icon:<FaSquareRootVariable/>},
+  {name:"C",    class:"C",    icon:<FaC/>}
+]
+const displaySize = 12; // How many characters can appear on the display.
 
 const print = console.log // Remove this later
 
@@ -13,8 +27,7 @@ function App() {
   const [display, setDisplay] = useState("0");
   const [working, setWorking] = useState(0);
   const [nextCalc, setNextCalc] = useState("");
-  const [numpad, setNumpad] = useState(nums);
-  // When the user presses equals, I want to show the result
+  // When the user presses equals, we want to show the result
   // in the main display. However, it should be overwritten
   // by whatever the user presses next. This keeps track of
   // whether the main text should be overwritten or not.
@@ -28,10 +41,14 @@ function App() {
       tempResult;
       setTemp(false);
     }
-
-    // If we don't turn result into a string before adding
-    // the next number, it will just output the sum.
-    else setDisplay(display.toString() + num);
+    
+    else {
+      // Make sure the screen isn't already full.
+      if (display.length < displaySize) {
+        // Add the next input to the end of the string.
+        setDisplay(display.toString() + num);
+      }
+    }
 
     // If the nextCalc hasn't been set, clear out the working
     // variable and treat this as a new calculation.
@@ -103,6 +120,10 @@ function App() {
     }
   }
 
+  const makeButton = (command, index) => {
+    return <button className={"btn"+command.class} onClick={() => inputCommand(command.name)} key={index}>{command.icon ? (command.icon) : (command.name)}</button>
+  }
+
   return (
     <>
       <h1>Calculator</h1>
@@ -121,26 +142,22 @@ function App() {
       <div className="mainKeys">
         <div className="commands leftKeys">
           {leftKeys.map((command, index) => {
-            return <button onClick={() => inputCommand(command)} key={index}>{command}</button>
+            return makeButton(command,index);
           })}
         </div>
         <div className="numpad">
           {nums.map((num, index) => {
-            return <button className={"mainBtn btn"+num} onClick={() => inputNum(num)} key={index}>{num}</button>
+            return <button className={"numBtn btn"+num} onClick={() => inputNum(num)} key={index}>{num}</button>
           })}
           {bottomKeys.map((command, index) => {
-            return <button  className="mainBtn" onClick={() => inputCommand(command)} key={index}>{command}</button>
+            return makeButton(command,index);
           })}
         </div>
         <div className="commands">
-          {commands.map((command, index) => {
-            return <button onClick={() => inputCommand(command)} key={index}>{command}</button>
+          {rightKeys.map((command, index) => {
+            return makeButton(command,index);
           })}
         </div>
-      </div>
-      
-      <div className="commands">
-        
       </div>
     </>
   )
