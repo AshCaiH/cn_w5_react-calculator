@@ -7,16 +7,28 @@ const bottomKeys = ["=", "."];
 const leftKeys = ["ANS", "C"]
 const displaySize = 12;
 
+const print = console.log // Remove this later
+
 function App() {
   const [display, setDisplay] = useState("0");
   const [working, setWorking] = useState(0);
   const [nextCalc, setNextCalc] = useState("");
   const [numpad, setNumpad] = useState(nums);
+  // When the user presses equals, I want to show the result
+  // in the main display. However, it should be overwritten
+  // by whatever the user presses next. This keeps track of
+  // whether the main text should be overwritten or not.
+  const [tempResult, setTemp] = useState(false);
 
   const inputNum = (num) => {
-    // If the display starts with a 0, replace it with the
-    // number the user has input.
-    if (display === "0") setDisplay(num.toString());
+    // If the input region is 0 or the tempResult flag is set,
+    // overwrite with the user's input.
+    if (display === "0" || tempResult) {
+      setDisplay(num.toString());
+      tempResult;
+      setTemp(false);
+    }
+
     // If we don't turn result into a string before adding
     // the next number, it will just output the sum.
     else setDisplay(display.toString() + num);
@@ -32,27 +44,42 @@ function App() {
     return Math.round(num * factor) / factor;
   }
 
-  const calculate = () => {
-    if (working == 0) setWorking(display);
+  const calculate = (result) => {
+    
+    let answer = 0;
+    let num1 = parseFloat(working); // Number in memory
+    let num2 = parseFloat(display); // Number entered by user
+    
+    // if (working == 0) setWorking(display);
 
     switch (nextCalc) {
       case "+":
-        setWorking(parseFloat(working) + parseFloat(display)); 
+        answer = num1 + num2; 
         break;
       case "-":
-        setWorking(parseFloat(working) - parseFloat(display));
+        answer = num1 - num2; 
         break;
       case "*":
-        setWorking(parseFloat(working) * parseFloat(display));
+        answer = num1 * num2; 
         break;
       case "/":
-        setWorking(parseFloat(working) / parseFloat(display));
+        answer = num1 / num2; 
         break;
       default:
+        answer = num2;
         break;
     }
 
-    setDisplay("0");
+    setWorking(answer);
+
+    if (answer.toString().length > 12) answer = answer.toExponential(9);
+
+    if (result) {
+      setDisplay(answer);
+      setTemp(true);
+    } else {
+      setDisplay("0");
+    }
   }
 
   const inputCommand = (command) => {
@@ -66,12 +93,12 @@ function App() {
         setDisplay(display + ".");
         break;
       case "=":
-        calculate();
+        calculate(true);
         setNextCalc("");
         break;
       default:
         // User can change calc function after picking one.
-        if (display != 0) calculate();
+        if (display != 0 && tempResult == false) calculate();
         setNextCalc(command);
     }
   }
