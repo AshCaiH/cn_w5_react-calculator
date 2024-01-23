@@ -29,6 +29,7 @@
 
 .mainKeys {
   display: flex;
+  justify-content: center;
 }
 
 .commands {
@@ -46,6 +47,9 @@
   background-color: rgb(213, 217, 196);
   padding: 10px 20px;
   box-shadow: -3px 3px 1px inset rgba(0,0,0,0.15);
+  margin-bottom:20px;
+  width: 270px;
+  overflow: hidden;
 }
 
 .displayRow p {
@@ -74,6 +78,21 @@ button {
   display: flex;
   justify-content: center;
   align-items: center;
+  border:none !important;
+  border-bottom: 3px solid rgba(0,0,0,0.2) !important;
+}
+
+button:hover {
+  border-bottom: 2px solid rgba(0,0,0,0.2) !important;
+  position:relative;
+  top:1px;
+}
+
+button:active {
+  border-bottom: 0px solid rgba(0,0,0,0.2) !important;
+  border-top: 1px solid rgba(0,0,0,0.2) !important;
+  position:relative;
+  top:3px;
 }
 
 .numBtn {
@@ -83,4 +102,8 @@ button {
 
 .btnC {
   background-color: rgb(241, 209, 147);
+}
+
+.btnEq {
+  background-color: rgb(191, 215, 247);
 }

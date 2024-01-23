@@ -89,7 +89,15 @@ function App() {
 
     setWorking(answer);
 
-    if (answer.toString().length > 12) answer = answer.toExponential(8);
+    // If the answer is too long, try rounding it in case it's a
+    // floating point error, and if it's still too long, convert
+    // it to exponential format.
+    if (answer.toString().length > 12) {
+      answer = round(answer);
+      if (answer.toString().length > 12) {
+        answer = answer.toExponential(8);
+      }
+    }
 
     if (result) {
       setDisplay(answer);
@@ -107,7 +115,8 @@ function App() {
         setNextCalc("");
         break;
       case ".":
-        setDisplay(display + ".");
+        if (tempResult) setDisplay("0.");
+        else setDisplay(display.toString() + ".");
         break;
       case "=":
         calculate(true);
@@ -127,7 +136,6 @@ function App() {
   return (
     <>
       <h1>Calculator</h1>
-
 
       <div className="display">
         <div className="displayRow top">
