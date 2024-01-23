@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import './App.css'
 
-const nums = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-const commands = [".","+","-","*","/","=","C"];
+const nums = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].reverse();
+const commands = ["/","*","-","+"];
+const bottomKeys = ["=", "."];
+const leftKeys = ["ANS", "C"]
 const displaySize = 12;
 
 function App() {
@@ -53,9 +55,7 @@ function App() {
     setDisplay("0");
   }
 
-  const inputCommand = (e) => {
-    const command = commands[e];
-
+  const inputCommand = (command) => {
     switch (command) {
       case "C": 
         setDisplay("0");
@@ -81,20 +81,39 @@ function App() {
       <h1>Calculator</h1>
 
 
-      <p className="working">{parseFloat(round(working))}</p>
-      <p className="calcType">{nextCalc}</p>
-      <p className="display">{display}</p>
+      <div className="display">
+        <div className="displayRow top">
+          <p className="working">{parseFloat(round(working))}</p>
+          <p className="calcType">{nextCalc}</p>
+        </div>
+        <div className="displayRow bottom">
+          <p className="display">{display}</p>
+        </div>
+      </div>
 
-      <div className="numpad">
-        {nums.map((num, index) => {
-          return <button onClick={() => inputNum(index)} key={index}>{num}</button>
-        })}
+      <div className="mainKeys">
+        <div className="commands leftKeys">
+          {leftKeys.map((command, index) => {
+            return <button onClick={() => inputCommand(command)} key={index}>{command}</button>
+          })}
+        </div>
+        <div className="numpad">
+          {nums.map((num, index) => {
+            return <button className={"mainBtn btn"+num} onClick={() => inputNum(num)} key={index}>{num}</button>
+          })}
+          {bottomKeys.map((command, index) => {
+            return <button  className="mainBtn" onClick={() => inputCommand(command)} key={index}>{command}</button>
+          })}
+        </div>
+        <div className="commands">
+          {commands.map((command, index) => {
+            return <button onClick={() => inputCommand(command)} key={index}>{command}</button>
+          })}
+        </div>
       </div>
       
       <div className="commands">
-        {commands.map((command, index) => {
-          return <button onClick={() => inputCommand(index)} key={index}>{command}</button>
-        })}
+        
       </div>
     </>
   )
