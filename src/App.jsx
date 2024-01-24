@@ -65,13 +65,10 @@ function App() {
     return Math.round(num * factor) / factor;
   }
 
-  const calculate = (result) => {
-    
+  const calculate = (result) => {    
     let answer = 0;
     let num1 = parseFloat(working); // Number in memory
     let num2 = parseFloat(display); // Number entered by user
-    
-    // if (working == 0) setWorking(display);
 
     switch (nextCalc) {
       case "+":
@@ -85,6 +82,9 @@ function App() {
         break;
       case "/":
         answer = num1 / num2; 
+        break;
+      case "Pow":
+        answer = Math.pow(num1,num2); 
         break;
       default:
         answer = num2;
@@ -112,11 +112,16 @@ function App() {
   }
 
   const keyPressEvent = (e) => {
+    // Overrides default behaviour, like going back a page when hitting backspace.
+    e.preventDefault();
     // If pressed key is between 0 and 9, add it to the input.
-    if ([...Array(9).keys()].includes(parseInt(e.key))) inputNum(parseInt(e.key))
+    if ([...Array(10).keys()].includes(parseInt(e.key))) inputNum(parseInt(e.key))
     else if (e.key == "Delete" || e.key == "Backspace") inputCommand("BkSp");
     else if (e.key == "Enter" ) inputCommand("=");
+    else if (e.key == "C" || e.key == "c" ) inputCommand("C");
     else {
+      // If it's not anything specified above, check the allKeys list for anything
+      // left over.
       if (allKeys.includes(e.key)) inputCommand(e.key);
     }
   }
@@ -139,6 +144,10 @@ function App() {
       case "BkSp":
         if (display.length > 1) setDisplay(display.slice(0, -1));
         else setDisplay("0");
+        break;
+      case "Sqrt":
+        setDisplay(Math.sqrt(parseFloat(display)));
+        setNextCalc("Sqrt");
         break;
       default:
         // User can change calc function after picking one.
