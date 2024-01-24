@@ -16,7 +16,8 @@
   width: 190px;
   flex-wrap: wrap;
   align-self: center;
-  justify-content: center;
+  justify-content: center;  
+  margin: 0 5px;
 }
 
 .btn0 {
@@ -37,10 +38,6 @@
   flex-direction: column;
 }
 
-.leftKeys {
-  margin-right: 6px;
-}
-
 .display {
   font-family: "Chivo Mono";
   font-variant-ligatures: none;
@@ -50,6 +47,7 @@
   margin-bottom:20px;
   width: 270px;
   overflow: hidden;
+  align-self: center;
 }
 
 .displayRow p {
@@ -100,7 +98,7 @@ button:active {
   font-size: 16pt;
 }
 
-.btnC {
+.btnC, .btnBkSp {
   background-color: rgb(241, 209, 147);
 }
 

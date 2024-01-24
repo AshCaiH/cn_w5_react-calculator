@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { FaDivide, FaPlus, FaX, FaMinus, FaC, FaEquals, FaSuperscript, FaSquareRootVariable  } from "react-icons/fa6";
+import { FaDivide, FaPlus, FaX, FaMinus, FaC, FaEquals, FaSuperscript,
+         FaSquareRootVariable,FaArrowLeft} from "react-icons/fa6";
 import { GoDotFill, } from "react-icons/go";
 import './App.css'
 
@@ -17,6 +18,7 @@ const bottomKeys = [
 const leftKeys = [
   {name:"Pow",  class:"Pow",  icon:<FaSuperscript/>},
   {name:"Sqrt", class:"Sqrt", icon:<FaSquareRootVariable/>},
+  {name:"BkSp", class:"BkSp", icon:<FaArrowLeft/>},
   {name:"C",    class:"C",    icon:<FaC/>}
 ]
 const displaySize = 12; // How many characters can appear on the display.
@@ -115,12 +117,16 @@ function App() {
         setNextCalc("");
         break;
       case ".":
-        if (tempResult) setDisplay("0.");
+        if (tempResult) setDisplay("0.".toString());
         else setDisplay(display.toString() + ".");
         break;
       case "=":
         calculate(true);
         setNextCalc("");
+        break;
+      case "BkSp":
+        if (display.length > 1) setDisplay(display.slice(0, -1));
+        else setDisplay("0");
         break;
       default:
         // User can change calc function after picking one.
@@ -130,7 +136,11 @@ function App() {
   }
 
   const makeButton = (command, index) => {
-    return <button className={"btn"+command.class} onClick={() => inputCommand(command.name)} key={index}>{command.icon ? (command.icon) : (command.name)}</button>
+    return <button 
+      className={"btn"+command.class} 
+      onClick={() => inputCommand(command.name)} 
+      key={index}>{command.icon ? (command.icon) : (command.name)}
+    </button>
   }
 
   return (
@@ -169,6 +179,8 @@ function App() {
       </div>
     </>
   )
+
+  // document.addEventListener(KeyboardEvent.
 }
 
 export default App
