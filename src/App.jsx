@@ -197,7 +197,7 @@ function App() {
 
   return (
     <>
-      <h1>Calculator</h1>
+      <p className="logo">Calco 3000</p>
 
       <div className="display">
         <div className="displayRow top">
