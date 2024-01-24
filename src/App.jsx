@@ -21,6 +21,8 @@ const leftKeys = [
   {name:"BkSp", class:"BkSp", icon:<FaArrowLeft/>},
   {name:"C",    class:"C",    icon:<FaC/>}
 ]
+// Get one list of all function keys.
+const allKeys = [].concat(rightKeys,leftKeys,bottomKeys).map((k) => { return k.name })
 const displaySize = 12; // How many characters can appear on the display.
 
 const print = console.log // Remove this later
@@ -110,8 +112,13 @@ function App() {
   }
 
   const keyPressEvent = (e) => {
-    e.preventDefault();
-    console.log(e);
+    // If pressed key is between 0 and 9, add it to the input.
+    if ([...Array(9).keys()].includes(parseInt(e.key))) inputNum(parseInt(e.key))
+    else if (e.key == "Delete" || e.key == "Backspace") inputCommand("BkSp");
+    else if (e.key == "Enter" ) inputCommand("=");
+    else {
+      if (allKeys.includes(e.key)) inputCommand(e.key);
+    }
   }
 
   const inputCommand = (command) => {
@@ -152,6 +159,9 @@ function App() {
   // causes them to run twice each time.
   useEffect(() => {
     document.addEventListener("keydown", keyPressEvent);
+
+    // Removes the existing event listener whenever the page rerenders.
+    return () => document.removeEventListener("keydown", keyPressEvent);
   });
 
   return (
@@ -184,7 +194,7 @@ function App() {
         </div>
         <div className="commands">
           {rightKeys.map((command, index) => {
-            return makeButton(command,index);
+            return makeButton(command, index);
           })}
         </div>
       </div>
