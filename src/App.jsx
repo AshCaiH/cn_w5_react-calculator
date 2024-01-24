@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FaDivide, FaPlus, FaX, FaMinus, FaC, FaEquals, FaSuperscript,
          FaSquareRootVariable,FaArrowLeft} from "react-icons/fa6";
 import { GoDotFill, } from "react-icons/go";
@@ -109,6 +109,11 @@ function App() {
     }
   }
 
+  const keyPressEvent = (e) => {
+    e.preventDefault();
+    console.log(e);
+  }
+
   const inputCommand = (command) => {
     switch (command) {
       case "C": 
@@ -142,6 +147,12 @@ function App() {
       key={index}>{command.icon ? (command.icon) : (command.name)}
     </button>
   }
+
+  // Adding keyboard event listeners outside of the useEffect function
+  // causes them to run twice each time.
+  useEffect(() => {
+    document.addEventListener("keydown", keyPressEvent);
+  });
 
   return (
     <>
@@ -179,8 +190,6 @@ function App() {
       </div>
     </>
   )
-
-  // document.addEventListener(KeyboardEvent.
 }
 
 export default App
