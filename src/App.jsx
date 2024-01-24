@@ -38,6 +38,8 @@ function App() {
   const [tempResult, setTemp] = useState(false);
 
   const inputNum = (num) => {
+    if (nextCalc == "Eq" || nextCalc == "Sqrt") setNextCalc("");
+
     // If the input region is 0 or the tempResult flag is set,
     // overwrite with the user's input.
     if (display === "0" || tempResult) {
@@ -65,7 +67,7 @@ function App() {
     return Math.round(num * factor) / factor;
   }
 
-  const calculate = (result) => {    
+  const calculate = (result) => {
     let answer = 0;
     let num1 = parseFloat(working); // Number in memory
     let num2 = parseFloat(display); // Number entered by user
@@ -111,18 +113,23 @@ function App() {
     }
   }
 
-  const keyPressEvent = (e) => {
-    // Overrides default behaviour, like going back a page when hitting backspace.
-    e.preventDefault();
+  const keyPressEvent = (e) => {    
     // If pressed key is between 0 and 9, add it to the input.
     if ([...Array(10).keys()].includes(parseInt(e.key))) inputNum(parseInt(e.key))
     else if (e.key == "Delete" || e.key == "Backspace") inputCommand("BkSp");
     else if (e.key == "Enter" ) inputCommand("=");
     else if (e.key == "C" || e.key == "c" ) inputCommand("C");
+    else if (e.key == "P" || e.key == "p" ) inputCommand("Pow");
+    else if (e.key == "S" || e.key == "s" ) inputCommand("Sqrt");
     else {
       // If it's not anything specified above, check the allKeys list for anything
       // left over.
-      if (allKeys.includes(e.key)) inputCommand(e.key);
+      if (allKeys.includes(e.key)) {
+        // Overrides default behaviour, like going back a page when hitting backspace.
+        // Doing it here ensures it only overrides keys we use and not things like F5 or F12.
+        e.preventDefault();
+        inputCommand(e.key);
+      }
     }
   }
 
@@ -134,12 +141,17 @@ function App() {
         setNextCalc("");
         break;
       case ".":
-        if (tempResult) setDisplay("0.".toString());
+        if (tempResult) {
+          setDisplay("0.".toString());
+          setWorking(0);
+          setNextCalc("");
+          setTemp(false);
+        }
         else setDisplay(display.toString() + ".");
         break;
       case "=":
         calculate(true);
-        setNextCalc("");
+        setNextCalc("Eq");
         break;
       case "BkSp":
         if (display.length > 1) setDisplay(display.slice(0, -1));
@@ -148,10 +160,20 @@ function App() {
       case "Sqrt":
         setDisplay(Math.sqrt(parseFloat(display)));
         setNextCalc("Sqrt");
+        setTemp(true);
         break;
       default:
-        // User can change calc function after picking one.
+        // User can change calc function after picking one without losing
+        // the working number.
         if (display != 0 && tempResult == false) calculate();
+
+        // Move result back to the working number and reset the main display.
+        else if (tempResult == true) {
+          setWorking(display);
+          setDisplay("0");
+          setTemp(false);
+        }
+        
         setNextCalc(command);
     }
   }
