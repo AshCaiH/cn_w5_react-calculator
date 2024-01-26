@@ -115,6 +115,9 @@ function App() {
   }
 
   const keyPressEvent = (e) => {    
+    // Prevents default browser behaviours that interfere with the calculator keyboard inputs.
+    if (e.key == "Backspace" || e.key == "/") e.preventDefault();
+
     // If pressed key is between 0 and 9, add it to the input.
     if ([...Array(10).keys()].includes(parseInt(e.key))) inputNum(parseInt(e.key))
     else if (e.key == "Delete" || e.key == "Backspace") inputCommand("BkSp");
@@ -123,12 +126,8 @@ function App() {
     else if (e.key == "P" || e.key == "p" ) inputCommand("Pow");
     else if (e.key == "S" || e.key == "s" ) inputCommand("Sqrt");
     else {
-      // If it's not anything specified above, check the allKeys list for anything
-      // left over.
+      // Catches anything left over.   
       if (allKeys.includes(e.key)) {
-        // Overrides default behaviour, such as going back a page when hitting backspace.
-        // Doing it here ensures it only overrides keys in the allKeys list and not things like F5 or F12.
-        e.preventDefault();
         inputCommand(e.key);
       }
     }
