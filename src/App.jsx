@@ -25,11 +25,9 @@ const leftKeys = [
 const allKeys = [].concat(rightKeys,leftKeys,bottomKeys).map((k) => { return k.name })
 const displaySize = 12; // How many characters can appear on the display.
 
-const print = console.log // Remove this later
-
 function App() {
-  const [display, setDisplay] = useState("0");
-  const [working, setWorking] = useState(0);
+  const [mainDisplay, setMainDisp] = useState("0");
+  const [memDisplay, setMemDisp] = useState(0); 
   const [nextCalc, setNextCalc] = useState("");
   // When the user presses equals, we want to show the result
   // in the main display. However, it should be overwritten
@@ -42,23 +40,23 @@ function App() {
 
     // If the input region is 0 or the tempResult flag is set,
     // overwrite with the user's input.
-    if (display === "0" || tempResult) {
-      setDisplay(num.toString());
+    if (mainDisplay === "0" || tempResult) {
+      setMainDisp(num.toString());
       tempResult;
       setTemp(false);
     }
     
     else {
       // Make sure the screen isn't already full.
-      if (display.length < displaySize) {
+      if (mainDisplay.length < displaySize) {
         // Add the next input to the end of the string.
-        setDisplay(display.toString() + num);
+        setMainDisp(mainDisplay.toString() + num);
       }
     }
 
     // If the nextCalc hasn't been set, clear out the working
     // variable and treat this as a new calculation.
-    if (!nextCalc) setWorking(0);
+    if (!nextCalc) setMemDisp(0);
   }
 
   // Use this regularly to address floating point errors.
@@ -67,11 +65,12 @@ function App() {
     return Math.round(num * factor) / factor;
   }
 
-  const calculate = (result) => {
+  const calculate = (isResult) => {
     let answer = 0;
-    let num1 = parseFloat(working); // Number in memory
-    let num2 = parseFloat(display); // Number entered by user
+    let num1 = parseFloat(memDisplay); // Number in memory
+    let num2 = parseFloat(mainDisplay); // Number entered by user
 
+    // Check the stored calculation.
     switch (nextCalc) {
       case "+":
         answer = num1 + num2; 
@@ -93,7 +92,7 @@ function App() {
         break;
     }
 
-    setWorking(answer);
+    setMemDisp(answer);
 
     // If the answer is too long, try rounding it in case it's a
     // floating point error, and if it's still too long, convert
@@ -105,11 +104,13 @@ function App() {
       }
     }
 
-    if (result) {
-      setDisplay(answer);
+    // Shows the answer on the main display instead of just on the 
+    // memory display under certain circumstances.
+    if (isResult) {
+      setMainDisp(answer);
       setTemp(true);
     } else {
-      setDisplay("0");
+      setMainDisp("0");
     }
   }
 
@@ -125,8 +126,8 @@ function App() {
       // If it's not anything specified above, check the allKeys list for anything
       // left over.
       if (allKeys.includes(e.key)) {
-        // Overrides default behaviour, like going back a page when hitting backspace.
-        // Doing it here ensures it only overrides keys we use and not things like F5 or F12.
+        // Overrides default behaviour, such as going back a page when hitting backspace.
+        // Doing it here ensures it only overrides keys in the allKeys list and not things like F5 or F12.
         e.preventDefault();
         inputCommand(e.key);
       }
@@ -136,41 +137,41 @@ function App() {
   const inputCommand = (command) => {
     switch (command) {
       case "C": 
-        setDisplay("0");
-        setWorking(0);
+        setMainDisp("0");
+        setMemDisp(0);
         setNextCalc("");
         break;
       case ".":
         if (tempResult) {
-          setDisplay("0.".toString());
-          setWorking(0);
+          setMainDisp("0.".toString());
+          setMemDisp(0);
           setNextCalc("");
           setTemp(false);
         }
-        else setDisplay(display.toString() + ".");
+        else setMainDisp(mainDisplay.toString() + ".");
         break;
       case "=":
         calculate(true);
         setNextCalc("Eq");
         break;
       case "BkSp":
-        if (display.length > 1) setDisplay(display.slice(0, -1));
-        else setDisplay("0");
+        if (mainDisplay.length > 1) setMainDisp(mainDisplay.slice(0, -1));
+        else setMainDisp("0");
         break;
       case "Sqrt":
-        setDisplay(Math.sqrt(parseFloat(display)));
+        setMainDisp(Math.sqrt(parseFloat(mainDisplay)));
         setNextCalc("Sqrt");
         setTemp(true);
         break;
       default:
         // User can change calc function after picking one without losing
         // the working number.
-        if (display != 0 && tempResult == false) calculate();
+        if (mainDisplay != 0 && tempResult == false) calculate();
 
         // Move result back to the working number and reset the main display.
         else if (tempResult == true) {
-          setWorking(display);
-          setDisplay("0");
+          setMemDisp(mainDisplay);
+          setMainDisp("0");
           setTemp(false);
         }
         
@@ -201,11 +202,11 @@ function App() {
 
       <div className="display">
         <div className="displayRow top">
-          <p className="working">{parseFloat(round(working))}</p>
+          <p className="working">{parseFloat(round(memDisplay))}</p>
           <p className="calcType">{nextCalc}</p>
         </div>
         <div className="displayRow bottom">
-          <p className="maindisplay">{display}</p>
+          <p className="maindisplay">{mainDisplay}</p>
         </div>
       </div>
 
